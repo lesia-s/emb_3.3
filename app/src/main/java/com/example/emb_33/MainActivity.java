@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText x3Text;
     private EditText x4Text;
     private EditText yText;
+    private EditText mutationText;
 
     private TextView aText;
     private TextView bText;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         x3Text = findViewById(R.id.edit_x3);
         x4Text = findViewById(R.id.edit_x4);
         yText = findViewById(R.id.edit_y);
+        mutationText = findViewById(R.id.edit_mutation);
 
         aText = findViewById(R.id.text_a);
         bText = findViewById(R.id.text_b);
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Integer> geneticAlgorithhm() {
         int x1 = 0, x2 = 0, x3 = 0, x4 = 0, y = 0, iterations = 0;
-        double probability = 0.0;
+        double probability = 0.0, mutation = 0.0;
         ArrayList<ArrayList<Integer>> population = new ArrayList<>();
 
         try {
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
             x3 = Integer.parseInt(x3Text.getText().toString());
             x4 = Integer.parseInt(x4Text.getText().toString());
             y = Integer.parseInt(yText.getText().toString());
+            mutation = Double.parseDouble(mutationText.getText().toString());
             iterations = Integer.parseInt(iterationsSpinner.getSelectedItem().toString());
             probability = Double.parseDouble(probabilitySpinner.getSelectedItem().toString());
         } catch (NumberFormatException ex) {
@@ -136,8 +139,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if (Math.random() < probability) {
                     int choice = (int) (Math.random() * children.get(j).size());
-                    int rand = 1 + (int) (Math.random() * (y / 2));
-                    children.get(j).set(choice, rand);
+                    int gen = (int) (children.get(j).get(choice) * mutation);
+                    children.get(j).set(choice, gen);
                 }
             }
             population = children;
@@ -162,6 +165,10 @@ public class MainActivity extends AppCompatActivity {
                 || x3Text.getText().length() == 0 || x4Text.getText().length() == 0
                 || yText.getText().length() == 0) {
             return showError("Empty field!");
+        }
+        if (mutationText.getText().length() == 0 || Double.parseDouble(mutationText.getText().toString()) <= 0.0
+                || Double.parseDouble(mutationText.getText().toString()) > 1.0) {
+            return showError("Incorrect mutation!");
         }
         return true;
     }
